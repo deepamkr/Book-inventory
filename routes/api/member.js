@@ -2,7 +2,7 @@ const express =require('express')
 const router =express.Router()
 const path=require('path')
 const notes= require('../../notes.js')
-const Joi = require('@hapi/joi');
+const Joi = require('@hapi/joi')
 
 
 router.get('/',(req,res)=>res.send(notes.loadNotes()))
@@ -11,17 +11,14 @@ const schema = Joi.object({
     title: Joi.string().required(),
     price: Joi.number().integer().required(),
     unit: Joi.number().integer().required()
-});
-const schema1 = Joi.object({
-    title: Joi.string().required(),
-    
-});
+})
+
 router.post('/', (req, res) => {
     const { error } = schema.validate(req.body);
     if (error) {
         res.status(400).json({ error: error.details[0].message });
     } else {
-        const addNoteResponse = notes.addNote(req.body.title, req.body.price, req.body.unit);
+        const addNoteResponse = notes.addNote(req.body.title, parseInt(req.body.price), parseInt(req.body.unit));
         
         if (addNoteResponse.status === 400) {
             res.status(400).json({ error: addNoteResponse.message });
@@ -31,17 +28,17 @@ router.post('/', (req, res) => {
         } 
        
     }
-});
-router.post('/:title', (req, res) => {
-    const { error } = schema1.validate(req.body);
-    if (error) {
-        res.status(400).json({ error: error.details[0].message })
-    } else {
-        notes.removeNote(req.body.title)
-        res.json({ message: `Note with title ${title} removed.` });
+})
+// router.post('/:title', (req, res) => {
+//     const { error } = schema1.validate(req.body);
+//     if (error) {
+//         res.status(400).json({ error: error.details[0].message })
+//     } else {
+//         notes.removeNote(req.body.title)
+//         res.json({ message: `Note with title ${title} removed.` });
        
-    }
-});
+//     }
+// })
 
 
 

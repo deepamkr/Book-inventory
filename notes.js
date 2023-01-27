@@ -30,7 +30,11 @@ const addNote = (title, price, unit) => {
     const duplicateNote = notes.find(note => note.title === title);
     if (duplicateNote) {
         return { status: 400, message: "Book title already taken" };
-    } else {
+    } 
+    else if(unit<=0)
+    {
+        return { status: 400, message: "Unit should be greater than zero" };
+    }else {
         notes.push({
             title: title,
             price: price,
@@ -44,7 +48,7 @@ const addNote = (title, price, unit) => {
 const removeNote =(title)=>
 {
     const notes=loadNotes()
-    const removedNotes= notes.filter((note)=> note.title!==title || note.body!==body)
+    const removedNotes= notes.filter((note)=> note.title!==title)
     //console.log(removedNotes,notes)
     if(removedNotes.length===notes.length)
     {
@@ -65,14 +69,29 @@ const listNotes =()=>
         
     })
 }
-const readNotes =(title)=>
-{   const notes=loadNotes()
-    console.log('Your note is:')
-    const foundNote =notes.find((note)=> note.title===title)
-    if(foundNote){
-        console.log(foundNote.body)
+// const readNotes =(title)=>
+// {   const notes=loadNotes()
+//     //console.log('Your note is:')
+//     const foundNote =notes.find((note)=> note.title===title)
+//     if(foundNote){
+//        // console.log("price:",foundNote.price," unit:",foundNote.unit)
+//     }
+// }
+
+const readNotes = (title) => {
+    const notes = loadNotes();
+
+    const duplicateNote = notes.find(note => note.title === title);
+    if (duplicateNote) {
+        return { status: 200, message: `Books details are: Price: ${duplicateNote.price} , Unit: ${duplicateNote.unit}` };
+    } 
+    else {
+        return { status: 400, message: "Book not present in the database" };
     }
-}
+};
+
+
+
 // function made for saving the data reusable function
 
 // const saveNotes=(notes)=>{
