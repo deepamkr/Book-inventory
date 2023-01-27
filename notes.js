@@ -1,4 +1,5 @@
-const fs= require('fs')
+const fs= require('fs');
+const { uptime } = require('process');
 
 // the main function for the adding the data
 // const addNote = (title,price,unit)=>
@@ -90,7 +91,34 @@ const readNotes = (title) => {
     }
 };
 
+//Update the details in database
+const updateNotes = (title,price,unit) => {
+    const notes = loadNotes();
 
+    const duplicateNote = notes.find(note => note.title === title);
+    if (duplicateNote) {
+        fs.readFile('notes.json', 'utf8', (err, data) => {
+            if (err) throw err;
+            const notes = JSON.parse(data);
+            for (let i = 0; i < notes.length; i++) {
+                if (notes[i].title === title) {
+                    notes[i].price = price;
+                    notes[i].unit = unit;
+                    break;
+                }
+            }
+            fs.writeFile('notes.json', JSON.stringify(notes), 'utf8', (err) => {
+                if (err) throw err;
+                console.log('The file has been updated!');
+            });
+        });
+        
+        return { status: 200, message: `Books details of title ${duplicateNote.title} are Updated` };
+    } 
+    else {
+        return { status: 400, message: "Book not present in the database" };
+    }
+};
 
 // function made for saving the data reusable function
 
@@ -135,5 +163,6 @@ module.exports ={
     removeNote: removeNote,
     listNotes: listNotes,
     readNotes: readNotes,
-    loadNotes:loadNotes
+    loadNotes:loadNotes,
+    updateNotes: updateNotes
 }
